@@ -1,6 +1,6 @@
-import 'package:app01/telas/DashboardData.dart';
-import 'package:app01/telas/TelaAutomoveis.dart';
-import 'package:app01/telas/TelaLocatario.dart';
+import 'DashboardData.dart';
+import 'TelaAutomoveis.dart';
+import 'TelaLocatario.dart';
 import 'package:flutter/material.dart';
 
 class TelaDashboard extends StatelessWidget {

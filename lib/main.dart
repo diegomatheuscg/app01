@@ -1,4 +1,4 @@
-import 'package:app01/telas/Dashboard.dart';
+import 'telas/Dashboard.dart';
 import 'package:flutter/material.dart';
 
 void main() {
