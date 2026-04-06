@@ -1,3 +1,6 @@
+import 'package:app01/telas/DashboardData.dart';
+import 'package:app01/telas/TelaAutomoveis.dart';
+import 'package:app01/telas/TelaLocatario.dart';
 import 'package:flutter/material.dart';
 
 class TelaDashboard extends StatelessWidget {
@@ -7,7 +10,7 @@ class TelaDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Locadora Pro')),
-//DRAWER PRA NAVEGAR ENTRE AS TELAS
+      //DRAWER PRA NAVEGAR ENTRE AS TELAS
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -36,12 +39,18 @@ class TelaDashboard extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.minor_crash),
               title: const Text('Automóveis'),
-              onTap: () {},
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const TelaAutomoveis()));
+              },
             ),
             ListTile(
               leading: const Icon(Icons.people),
               title: const Text('Clientes'),
-              onTap: () {},
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const TelaLocatario()));
+              },
             ),
             ListTile(
               leading: const Icon(Icons.receipt_long),
@@ -57,15 +66,15 @@ class TelaDashboard extends StatelessWidget {
           ],
         ),
       ),
-      
-//PARA PODER SCROLLAR
+
+      //PARA PODER SCROLLAR
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Text(
-              'Visão Geral do Ativo',
+              'Visão Geral',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
@@ -80,15 +89,25 @@ class TelaDashboard extends StatelessWidget {
               children: [
                 _buildCardInfo(
                   'Disponíveis',
-                  '08',
+                  DashboardData.carrosDisponiveis.toString(),
                   Icons.check_circle,
                   Colors.green,
                 ),
-                _buildCardInfo('Alugados', dynamic , Icons.key, Colors.blue),
-                _buildCardInfo('Manutenção', '01', Icons.warning, Colors.amber),
+                _buildCardInfo(
+                  'Alugados',
+                  DashboardData.carrosAlugados.toString(),
+                  Icons.key,
+                  Colors.blue,
+                ),
+                _buildCardInfo(
+                  'Manutenção',
+                  DashboardData.carrosManutencao.toString(),
+                  Icons.warning,
+                  Colors.amber,
+                ),
                 _buildCardInfo(
                   'Receita Estimada',
-                  'R\$ 12k',
+                  DashboardData.receitaEstimada.toString(),
                   Icons.monetization_on,
                   Colors.purple,
                 ),
