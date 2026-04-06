@@ -3,51 +3,82 @@ import 'package:app01/telas/DashboardData.dart';
 import 'package:flutter/material.dart';
 import 'FormularioVeiculo.dart';
 
-class TelaAutomoveis extends StatelessWidget {
+class TelaAutomoveis extends StatefulWidget {
   const TelaAutomoveis({super.key});
+
+  @override
+  State<TelaAutomoveis> createState() => _TelaAutomoveisState();
+}
+
+class _TelaAutomoveisState extends State<TelaAutomoveis> {
   @override
   Widget build(BuildContext context) {
-    List<Automovel> carros = DashboardData.automoveis;
+    final List<Automovel> carros = DashboardData.automoveis;
+
     return Scaffold(
-      appBar: AppBar(title: Text('Lista de Automóveis')),
+      appBar: AppBar(title: const Text('Lista de Automóveis')),
       body: ListView.builder(
         itemCount: carros.length,
         itemBuilder: (context, index) {
           final carro = carros[index];
+
           return Card(
             child: ListTile(
               leading: const Icon(Icons.directions_car),
               title: Text('${carro.marca} ${carro.modelo}'),
               subtitle: Text('Placa: ${carro.placa}'),
               trailing: PopupMenuButton<String>(
-                  itemBuilder: (context) => <PopupMenuEntry<String>>[
-                        const PopupMenuItem<String>(
-                          value: 'editar',
-                          child: ListTile(
-                            leading: Icon(Icons.edit),
-                            title: Text('Editar'),
-                          ),
-                        ),
-                        const PopupMenuItem<String>(
-                          value: 'remover',
-                          child: ListTile(
-                            leading: Icon(Icons.delete, color: Colors.red),
-                            title: Text('Remover',
-                                style: TextStyle(color: Colors.red)),
-                          ),
-                        )
-                      ]),
+                onSelected: (String result) {
+                  if (result == 'remover') {
+                    setState(() {
+                      carros.removeAt(index);
+                    });
+                  } else if (result == 'editar') {
+                    //AINDA NADA
+                  }
+                },
+                itemBuilder: (context) => <PopupMenuEntry<String>>[
+                  const PopupMenuItem<String>(
+                    value: 'editar',
+                    child: Row(
+                      children: [
+                        Icon(Icons.edit),
+                        SizedBox(width: 12),
+                        Text('Editar'),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: 'remover',
+                    child: Row(
+                      children: [
+                        Icon(Icons.delete, color: Colors.red),
+                        SizedBox(width: 12),
+                        Text('Remover', style: TextStyle(color: Colors.red)),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          Navigator.push(
-            context, 
-            MaterialPageRoute(builder: (context)=> const FormularioVeiculo()));
-        }, child: const Icon(Icons.add)
-        ),
+        onPressed: () async {
+          final Automovel? novoCarro = await Navigator.push<Automovel>(
+            context,
+            MaterialPageRoute(builder: (context) => const FormularioVeiculo()),
+          );
+
+          if (novoCarro != null) {
+            setState(() {
+              DashboardData.automoveis.add(novoCarro);
+            });
+          }
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

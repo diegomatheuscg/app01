@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app01/model/Automovel.dart';
-import 'package:app01/model/Categoria.dart';
+import 'package:app01/telas/DashboardData.dart';
 
 class FormularioVeiculo extends StatefulWidget {
   const FormularioVeiculo({super.key});
@@ -10,10 +10,18 @@ class FormularioVeiculo extends StatefulWidget {
 }
 
 class _FormularioVeiculoState extends State<FormularioVeiculo> {
+  final _placaController = TextEditingController();
+  final _marcaController = TextEditingController();
+  final _modeloController = TextEditingController();
 
-  final _placaCtrl = TextEditingController();
-  final _marcaCtrl = TextEditingController();
-  final _modeloCtrl = TextEditingController();
+//LIMPAR DA MEMÓRIA😍
+  @override
+  void dispose() {
+    _placaController.dispose();
+    _marcaController.dispose();
+    _modeloController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,22 +31,26 @@ class _FormularioVeiculoState extends State<FormularioVeiculo> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(controller: _placaCtrl, decoration: const InputDecoration(labelText: 'Placa')),
-            TextField(controller: _marcaCtrl, decoration: const InputDecoration(labelText: 'Marca')),
-            TextField(controller: _modeloCtrl, decoration: const InputDecoration(labelText: 'Modelo')),
+            TextField(
+                controller: _placaController,
+                decoration: const InputDecoration(labelText: 'Placa')),
+            TextField(
+                controller: _marcaController,
+                decoration: const InputDecoration(labelText: 'Marca')),
+            TextField(
+                controller: _modeloController,
+                decoration: const InputDecoration(labelText: 'Modelo')),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                
                 final novoCarro = Automovel(
-                  placa: _placaCtrl.text,
-                  marca: _marcaCtrl.text,
-                  modelo: _modeloCtrl.text,
-                  anoFabricacao: 2024, 
+                  placa: _placaController.text,
+                  marca: _marcaController.text,
+                  modelo: _modeloController.text,
+                  anoFabricacao: 2024,
                   quilometragemAtual: 0.0,
-                  categoria: Categoria(id: '1', nome: 'Básico', valorDiaria: 100, valorSeguro: 20), 
+                  categoria: DashboardData.catSUV,
                 );
-                
 
                 Navigator.pop(context, novoCarro);
               },
