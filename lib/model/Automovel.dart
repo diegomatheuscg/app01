@@ -6,7 +6,11 @@ class Automovel {
   final String marca;
   final String modelo;
   final int anoFabricacao;
-  double quilometragemAtual;
+  double quilometragemAtual;  final int anoModelo;
+  final String cor;
+  final String renavam;
+  final String combustivel;
+
   StatusAutomovel status;
   final Categoria categoria; 
 
@@ -15,6 +19,10 @@ class Automovel {
     required this.marca,
     required this.modelo,
     required this.anoFabricacao,
+    required this.anoModelo,
+    required this.cor,
+    required this.renavam,
+    required this.combustivel,
     required this.quilometragemAtual,
     required this.categoria,
     this.status = StatusAutomovel.disponivel,

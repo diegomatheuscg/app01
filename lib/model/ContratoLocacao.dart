@@ -2,7 +2,8 @@ import 'package:app01/model/Automovel.dart';
 import 'package:app01/model/Locatario.dart';
 import 'package:app01/model/StatusAutomovel.dart';
 
-class ContratoLocacao {
+class ContratoLocacao {  static const double MULTA_ATRASO_DIARIA = 1.2; // 20% de acréscimo em diárias excedentes
+
   final String id;
   final Locatario locatario;
   final Automovel automovel;
@@ -46,8 +47,17 @@ class ContratoLocacao {
     int diasUso = dataDevolucaoReal!.difference(dataRetirada).inDays;
     
     // Trava de segurança: cobrança mínima de 1 diária
-    if (diasUso <= 0) diasUso = 1; 
+    if (diasUso <= 0) diasUso = 1;
 
-    valorTotal = diasUso * (automovel.categoria.valorDiaria + automovel.categoria.valorSeguro);
+    // Verificar atraso
+    int diasAtraso = dataDevolucaoReal!.difference(dataDevolucaoPrevista).inDays;
+    if (diasAtraso > 0) {
+      // Aplicar multa nas diárias excedentes
+      double valorBase = (diasUso - diasAtraso) * (automovel.categoria.valorDiaria + automovel.categoria.valorSeguro);
+      double valorMulta = diasAtraso * (automovel.categoria.valorDiaria + automovel.categoria.valorSeguro) * MULTA_ATRASO_DIARIA;
+      valorTotal = valorBase + valorMulta;
+    } else {
+      valorTotal = diasUso * (automovel.categoria.valorDiaria + automovel.categoria.valorSeguro);
+    }
   }
 }

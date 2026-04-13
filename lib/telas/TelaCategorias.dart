@@ -1,57 +1,37 @@
-import 'package:app01/model/Locatario.dart';
-import 'package:app01/telas/DashboardData.dart';
 import 'package:flutter/material.dart';
-import 'FormularioLocatario.dart';
+import 'package:app01/model/Categoria.dart';
+import 'package:app01/telas/DashboardData.dart';
 
-class TelaLocatario extends StatefulWidget {
-  const TelaLocatario({super.key});
+class TelaCategorias extends StatefulWidget {
+  const TelaCategorias({super.key});
 
   @override
-  State<TelaLocatario> createState() => _TelaLocatarioState();
+  State<TelaCategorias> createState() => _TelaCategoriasState();
 }
 
-class _TelaLocatarioState extends State<TelaLocatario> {
-  String _busca = '';
-
+class _TelaCategoriasState extends State<TelaCategorias> {
   @override
   Widget build(BuildContext context) {
-    List<Locatario> locatarios = DashboardData.locatarios.where((l) => l.nomeCompleto.toLowerCase().contains(_busca.toLowerCase())).toList();
+    final List<Categoria> categorias = DashboardData.categorias;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Lista de Locatários'),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(50),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: const InputDecoration(
-                hintText: 'Buscar por nome...',
-                prefixIcon: Icon(Icons.search),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-              onChanged: (value) => setState(() => _busca = value),
-            ),
-          ),
-        ),
-      ),
+      appBar: AppBar(title: const Text('Lista de Categorias')),
       body: ListView.builder(
-        itemCount: locatarios.length,
+        itemCount: categorias.length,
         itemBuilder: (context, index) {
-          final locatario = locatarios[index];
+          final categoria = categorias[index];
 
           return Card(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: ListTile(
-              leading: const Icon(Icons.person, color: Colors.blue),
-              title: Text(locatario.nomeCompleto),
-              subtitle: Text('CPF: ${locatario.cpf} | CNH: ${locatario.numeroCnh} | Idade: ${locatario.idade}'),
+              leading: const Icon(Icons.category, color: Colors.blue),
+              title: Text(categoria.nome),
+              subtitle: Text('Diária: R\$ ${categoria.valorDiaria.toStringAsFixed(2)} | Seguro: R\$ ${categoria.valorSeguro.toStringAsFixed(2)}'),
               trailing: PopupMenuButton<String>(
                 onSelected: (String result) {
                   if (result == 'remover') {
                     setState(() {
-                      DashboardData.locatarios.remove(locatario);
+                      categorias.removeAt(index);
                     });
                   } else if (result == 'editar') {
                     // TODO: Implementar edição
@@ -87,16 +67,8 @@ class _TelaLocatarioState extends State<TelaLocatario> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final Locatario? novoLocatario = await Navigator.push<Locatario>(
-            context,
-            MaterialPageRoute(builder: (context) => const FormularioLocatario()),
-          );
-
-          if (novoLocatario != null) {
-            setState(() {
-              DashboardData.locatarios.add(novoLocatario);
-            });
-          }
+          // Placeholder para formulário de categoria
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Formulário de Categoria em desenvolvimento')));
         },
         child: const Icon(Icons.add),
       ),

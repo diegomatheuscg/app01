@@ -1,6 +1,9 @@
 import 'DashboardData.dart';
 import 'TelaAutomoveis.dart';
 import 'TelaLocatario.dart';
+import 'TelaContrato.dart';
+import 'TelaCategorias.dart';
+import 'TelaRelatorios.dart';
 import 'package:flutter/material.dart';
 
 class TelaDashboard extends StatelessWidget {
@@ -55,13 +58,27 @@ class TelaDashboard extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.receipt_long),
               title: const Text('Locações (Contratos)'),
-              onTap: () {},
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const TelaContrato()));
+              },
             ),
             const Divider(),
             ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Configurações / Categorias'),
-              onTap: () {},
+              leading: const Icon(Icons.category),
+              title: const Text('Categorias'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const TelaCategorias()));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.bar_chart),
+              title: const Text('Relatórios'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const TelaRelatorios()));
+              },
             ),
           ],
         ),
@@ -107,7 +124,7 @@ class TelaDashboard extends StatelessWidget {
                 ),
                 _buildCardInfo(
                   'Receita Estimada',
-                  DashboardData.receitaEstimada.toString(),
+                  'R\$ ${DashboardData.receitaEstimada.toStringAsFixed(2)}',
                   Icons.monetization_on,
                   Colors.purple,
                 ),
