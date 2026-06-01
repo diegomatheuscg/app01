@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:app01/model/Automovel.dart';
 import 'package:app01/model/Categoria.dart';
 import 'package:app01/model/StatusAutomovel.dart';
-import 'package:app01/telas/DashboardData.dart';
+import 'package:app01/dao/CategoriaDAO.dart';
+import 'package:app01/dao/AutomovelDAO.dart';
 
 class FormularioVeiculo extends StatefulWidget {
   const FormularioVeiculo({super.key});
@@ -23,13 +24,17 @@ class _FormularioVeiculoState extends State<FormularioVeiculo> {
   final _combustivelController = TextEditingController();
   final _quilometragemController = TextEditingController();
 
+  final CategoriaDAO _categoriaDAO = CategoriaDAO();
+  final AutomovelDAO _automovelDAO = AutomovelDAO();
+
   Categoria? _categoriaSelecionada;
   StatusAutomovel? _statusSelecionado;
+  late Future<List<Categoria>> _categoriasFuture;
 
   @override
   void initState() {
     super.initState();
-    _categoriaSelecionada = DashboardData.categorias.first;
+    _categoriasFuture = _categoriaDAO.listar();
     _statusSelecionado = StatusAutomovel.disponivel;
   }
 
@@ -107,14 +112,30 @@ class _FormularioVeiculoState extends State<FormularioVeiculo> {
                   keyboardType: TextInputType.number,
                   validator: (value) => value!.isEmpty ? 'Campo obrigatório' : null,
                 ),
-                DropdownButtonFormField<Categoria>(
-                  initialValue: _categoriaSelecionada,
-                  decoration: const InputDecoration(labelText: 'Categoria'),
-                  items: DashboardData.categorias.map((cat) {
-                    return DropdownMenuItem(value: cat, child: Text(cat.nome));
-                  }).toList(),
-                  onChanged: (val) => setState(() => _categoriaSelecionada = val),
-                  validator: (value) => value == null ? 'Selecione uma categoria' : null,
+                FutureBuilder<List<Categoria>>(
+                  future: _categoriasFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    }
+
+                    if (snapshot.hasError) {
+                      return Text('Erro: ${snapshot.error}');
+                    }
+
+                    final categorias = snapshot.data ?? [];
+                    _categoriaSelecionada ??= categorias.isNotEmpty ? categorias.first : null;
+
+                    return DropdownButtonFormField<Categoria>(
+                      initialValue: _categoriaSelecionada,
+                      decoration: const InputDecoration(labelText: 'Categoria'),
+                      items: categorias.map((cat) {
+                        return DropdownMenuItem(value: cat, child: Text(cat.nome));
+                      }).toList(),
+                      onChanged: (val) => setState(() => _categoriaSelecionada = val),
+                      validator: (value) => value == null ? 'Selecione uma categoria' : null,
+                    );
+                  },
                 ),
                 DropdownButtonFormField<StatusAutomovel>(
                   initialValue: _statusSelecionado,
@@ -127,7 +148,7 @@ class _FormularioVeiculoState extends State<FormularioVeiculo> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       final novoCarro = Automovel(
                         placa: _placaController.text,
@@ -142,7 +163,10 @@ class _FormularioVeiculoState extends State<FormularioVeiculo> {
                         categoria: _categoriaSelecionada!,
                         status: _statusSelecionado!,
                       );
-                      Navigator.pop(context, novoCarro);
+                      await _automovelDAO.inserir(novoCarro);
+                      if (mounted) {
+                        Navigator.pop(context);
+                      }
                     }
                   },
                   child: const Text('Salvar'),

@@ -35,4 +35,39 @@ class Automovel {
   void registrarNovaQuilometragem(double novaKm) {
     quilometragemAtual = novaKm;
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'placa': placa,
+      'marca': marca,
+      'modelo': modelo,
+      'anoFabricacao': anoFabricacao,
+      'anoModelo': anoModelo,
+      'cor': cor,
+      'renavam': renavam,
+      'combustivel': combustivel,
+      'quilometragemAtual': quilometragemAtual,
+      'categoriaId': categoria.id,
+      'status': status.name,
+    };
+  }
+
+  factory Automovel.fromMap(Map<String, dynamic> map, Categoria categoria) {
+    return Automovel(
+      placa: map['placa'],
+      marca: map['marca'],
+      modelo: map['modelo'],
+      anoFabricacao: map['anoFabricacao'],
+      anoModelo: map['anoModelo'],
+      cor: map['cor'],
+      renavam: map['renavam'],
+      combustivel: map['combustivel'],
+      quilometragemAtual: (map['quilometragemAtual'] ?? 0.0).toDouble(),
+      categoria: categoria,
+      status: StatusAutomovel.values.firstWhere(
+        (e) => e.name == map['status'],
+        orElse: () => StatusAutomovel.disponivel,
+      ),
+    );
+  }
 }
